@@ -1,26 +1,31 @@
 (function () {
   'use strict';
 
-angular.module('MenuApp')
-.service('MenuDataService', 'MenuDataService');
+angular.module('MenuApp.data')
+.service('MenuDataService', MenuDataService);
+
+MenuDataService.$inject = ['$http'];
+function MenuDataService($http) {
+  var service = this;
 
 
-function getAllCategories() {
+  service.getAllCategories = function () {
+    return $http.get('https://davids-restaurant.herokuapp.com/categories.json')
+            .then(function (result) {
+              return result.data;
+            });
+  };
 
-  $http({
-    url: 'https://davids-restaurant.herokuapp.com/categories.json',
-
-  })
-
+  service.getItemsForCategory = function (categoryShortName) {
+    return $http.get('https://davids-restaurant.herokuapp.com/menu_items.json?category=',
+    {
+      params: {
+        'category': categoryShortName
+      }
+    })
+    .then(function (result) {
+      return result.data;
+    });
+  }
 }
-
-function getItemsForCategory(categoryShortName)() {
-
-
-  $http({
-    url: 'https://davids-restaurant.herokuapp.com/menu_items.json?category=',
-    
-  })
-}
-
 })();
